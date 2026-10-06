@@ -1,0 +1,95 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 40px 16px;
+  font-family: -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  background: #f4f5f7;
+  color: #222;
+}
+
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 24px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+h1 {
+  margin: 0 0 20px;
+  font-size: 24px;
+}
+
+#todo-form {
+  display: flex;
+  gap: 8px;
+}
+
+#todo-input {
+  flex: 1;
+  padding: 10px 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+button {
+  padding: 10px 16px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  background: #4a6cf7;
+  color: #fff;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #3553d6;
+}
+
+#todo-list {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+}
+
+#todo-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+#todo-list li span {
+  flex: 1;
+  word-break: break-all;
+}
+
+/* 완료된 할 일은 줄을 긋고 흐리게 표시 */
+#todo-list li.done span {
+  text-decoration: line-through;
+  color: #999;
+}
+
+#todo-list .delete-button {
+  padding: 6px 10px;
+  font-size: 14px;
+  background: #eee;
+  color: #555;
+}
+
+#todo-list .delete-button:hover {
+  background: #f8d7da;
+  color: #b02a37;
+}
+
+#empty-message {
+  margin: 20px 0 0;
+  color: #999;
+  text-align: center;
+}
