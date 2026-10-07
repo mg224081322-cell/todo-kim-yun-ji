@@ -58,6 +58,22 @@ button:hover {
   background: #3553d6;
 }
 
+/* 저장하는 동안 잠시 누를 수 없는 버튼 */
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* 오류 안내 상자 */
+#error-message {
+  margin: 16px 0 0;
+  padding: 10px 12px;
+  font-size: 14px;
+  border-radius: 8px;
+  background: #f8d7da;
+  color: #b02a37;
+}
+
 #todo-list {
   list-style: none;
   margin: 20px 0 0;

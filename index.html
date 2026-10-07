@@ -17,11 +17,17 @@
       <button type="submit">추가</button>
     </form>
 
+    <!-- 저장이나 불러오기에 실패하면 여기에 오류가 표시됩니다 -->
+    <p id="error-message" role="alert" hidden></p>
+
     <!-- 할 일이 여기에 표시됩니다 -->
     <ul id="todo-list"></ul>
-    <p id="empty-message">아직 할 일이 없어요.</p>
+    <p id="empty-message">불러오는 중…</p>
   </main>
 
+  <!-- Supabase 도구 → 접속 정보 → 앱 순서로 불러옵니다 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
