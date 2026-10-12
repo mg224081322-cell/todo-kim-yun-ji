@@ -76,15 +76,76 @@ function renderTodo(todo) {
     item.classList.toggle('done', done);
   });
 
-  // 이름이 있으면 "윤지: 운동하기"처럼 할 일 앞에 붙입니다.
+  // 할 일 글자를 채웁니다. 이름이 있으면 "윤지: 운동하기"처럼 앞에 붙여요.
+  // 글자를 고친 뒤에도 다시 쓰려고 함수로 만들어 둡니다.
   const label = document.createElement('span');
-  if (todo.author) {
-    const author = document.createElement('strong');
-    author.className = 'author';
-    author.textContent = todo.author;
-    label.append(author, ': ');
+  label.title = '두 번 누르면 고칠 수 있어요';
+  function fillLabel() {
+    label.replaceChildren(); // 안에 있던 글자를 비웁니다.
+    if (todo.author) {
+      const author = document.createElement('strong');
+      author.className = 'author';
+      author.textContent = todo.author;
+      label.append(author, ': ');
+    }
+    label.append(todo.text);
   }
-  label.append(todo.text);
+  fillLabel();
+
+  // 글자를 두 번 누르면 그 자리에 입력칸이 나타나 고칠 수 있습니다.
+  // Enter는 저장, Esc는 취소예요. 다른 곳을 눌러 입력칸에서 벗어나도 저장합니다.
+  label.addEventListener('dblclick', () => {
+    const editInput = document.createElement('input');
+    editInput.type = 'text';
+    editInput.className = 'edit-input';
+    editInput.value = todo.text;
+    label.replaceWith(editInput);
+    editInput.focus();
+    editInput.select(); // 글자 전체를 골라 둬서 바로 새로 쓸 수도 있게 합니다.
+
+    let finished = false; // Enter와 '벗어나기'가 겹쳐서 두 번 저장되지 않게 막습니다.
+
+    async function finishEditing(save) {
+      if (finished) return;
+      finished = true;
+
+      const newText = editInput.value.trim();
+      // 취소했거나, 글자를 다 지웠거나, 바뀐 게 없으면 원래 글자로 돌아갑니다.
+      if (!save || newText === '' || newText === todo.text) {
+        editInput.replaceWith(label);
+        return;
+      }
+
+      editInput.disabled = true; // 저장하는 동안 고치지 못하게 막습니다.
+
+      const { data, error } = await db
+        .from('todos')
+        .update({ text: newText })
+        .eq('id', todo.id)
+        .select();
+
+      if (error || data.length === 0) {
+        // 고친 글자를 남겨 두고 다시 시도할 수 있게 입력칸을 그대로 둡니다.
+        showError('할 일을 고치지 못했어요.', error ?? { message: '바뀐 할 일이 없어요' });
+        finished = false;
+        editInput.disabled = false;
+        editInput.focus();
+        return;
+      }
+      clearError();
+      todo.text = newText;
+      fillLabel();
+      editInput.replaceWith(label);
+    }
+
+    editInput.addEventListener('keydown', (event) => {
+      // 한글을 조합하는 중에 누른 Enter는 글자를 완성하는 용도라서 무시합니다.
+      if (event.isComposing) return;
+      if (event.key === 'Enter') finishEditing(true);
+      if (event.key === 'Escape') finishEditing(false);
+    });
+    editInput.addEventListener('blur', () => finishEditing(true));
+  });
 
   const deleteButton = document.createElement('button');
   deleteButton.type = 'button';

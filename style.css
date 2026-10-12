@@ -134,6 +134,16 @@ button:disabled {
   font-weight: 600;
 }
 
+/* 할 일을 두 번 눌렀을 때 나타나는 입력칸 */
+#todo-list .edit-input {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 8px;
+  font-size: 16px;
+  border: 1px solid #4a6cf7;
+  border-radius: 6px;
+}
+
 /* 할 일 오른쪽의 마감일 */
 #todo-list .due {
   font-size: 13px;
