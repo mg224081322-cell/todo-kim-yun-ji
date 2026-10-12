@@ -31,11 +31,31 @@ h1 {
   color: #888;
 }
 
-/* 이름 칸(위)과 할 일 칸 + 추가 버튼(아래)을 세로로 쌓기 */
+/* 이름·마감일 칸(위)과 할 일 칸 + 추가 버튼(아래)을 세로로 쌓기 */
 #todo-form {
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+/* 이름과 마감일을 한 줄에 두고, 화면이 좁으면 두 줄로 내립니다 */
+.meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+#author-input {
+  flex: 1;
+  min-width: 140px;
+}
+
+.due-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #666;
 }
 
 .input-row {
@@ -112,6 +132,13 @@ button:disabled {
 /* 할 일 앞에 붙는 작성자 이름 */
 #todo-list .author {
   font-weight: 600;
+}
+
+/* 할 일 오른쪽의 마감일 */
+#todo-list .due {
+  font-size: 13px;
+  color: #888;
+  white-space: nowrap;
 }
 
 #todo-list .delete-button {
