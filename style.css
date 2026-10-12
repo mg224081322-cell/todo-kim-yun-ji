@@ -104,10 +104,53 @@ button:disabled {
   color: #b02a37;
 }
 
+/* 보기 버튼(왼쪽)과 남은 개수(오른쪽). 화면이 좁으면 두 줄로 내려갑니다 */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 20px 0 0;
+}
+
+.filters {
+  display: flex;
+  gap: 4px;
+}
+
+.filters button {
+  padding: 6px 12px;
+  font-size: 14px;
+  background: #eee;
+  color: #555;
+}
+
+.filters button:hover {
+  background: #e0e3ea;
+}
+
+/* 지금 고른 보기 버튼은 파랗게 */
+.filters button[aria-pressed="true"] {
+  background: #4a6cf7;
+  color: #fff;
+}
+
+#remaining-count {
+  margin: 0;
+  font-size: 14px;
+  color: #888;
+}
+
 #todo-list {
   list-style: none;
-  margin: 20px 0 0;
+  margin: 12px 0 0;
   padding: 0;
+}
+
+/* 고른 보기에 맞지 않는 할 일은 숨깁니다 */
+#todo-list li[hidden] {
+  display: none;
 }
 
 #todo-list li {

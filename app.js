@@ -10,10 +10,51 @@ const submitButton = form.querySelector('button[type="submit"]');
 const list = document.getElementById('todo-list');
 const emptyMessage = document.getElementById('empty-message');
 const errorMessage = document.getElementById('error-message');
+const filterButtons = document.querySelectorAll('.filters button');
+const remainingCount = document.getElementById('remaining-count');
 
-// 할 일이 하나도 없으면 안내 문구를 보여 줍니다.
-function updateEmptyMessage() {
-  emptyMessage.hidden = list.children.length > 0;
+// 지금 고른 보기입니다. 'all'(전체), 'active'(진행 중), 'done'(완료) 중 하나예요.
+let currentFilter = 'all';
+
+// 보기마다 보여 줄 할 일이 없을 때 띄울 안내 문구입니다.
+const emptyTexts = {
+  all: '아직 할 일이 없어요.',
+  active: '진행 중인 할 일이 없어요.',
+  done: '완료한 할 일이 없어요.',
+};
+
+// 할 일이 추가·체크·삭제되거나 보기를 바꿀 때마다 화면을 맞춰 줍니다.
+// 1) 고른 보기에 맞는 할 일만 보이게 하고
+// 2) 보이는 할 일이 없으면 안내 문구를 띄우고
+// 3) 남은(완료하지 않은) 할 일 개수를 적습니다.
+function updateView() {
+  let visibleCount = 0;
+  let remaining = 0;
+
+  for (const item of list.children) {
+    const done = item.classList.contains('done');
+    if (!done) remaining += 1;
+
+    const show = currentFilter === 'all' || (currentFilter === 'done') === done;
+    item.hidden = !show;
+    if (show) visibleCount += 1;
+  }
+
+  emptyMessage.textContent = emptyTexts[currentFilter];
+  emptyMessage.hidden = visibleCount > 0;
+  remainingCount.textContent = `남은 할 일 ${remaining}개`;
+}
+
+// 전체·진행 중·완료 버튼을 누르면 보기를 바꿉니다.
+for (const button of filterButtons) {
+  button.addEventListener('click', () => {
+    currentFilter = button.dataset.filter;
+    // 고른 버튼만 '눌린 상태'로 표시합니다. (화면 읽기 프로그램도 이 표시를 읽어요)
+    for (const other of filterButtons) {
+      other.setAttribute('aria-pressed', other === button);
+    }
+    updateView();
+  });
 }
 
 // 오류가 나면 화면에 빨간 상자로 알려 줍니다.
@@ -74,6 +115,7 @@ function renderTodo(todo) {
     }
     clearError();
     item.classList.toggle('done', done);
+    updateView(); // 남은 개수가 바뀌고, 고른 보기에 따라 숨겨질 수도 있어요.
   });
 
   // 할 일 글자를 채웁니다. 이름이 있으면 "윤지: 운동하기"처럼 앞에 붙여요.
@@ -167,7 +209,7 @@ function renderTodo(todo) {
     }
     clearError();
     item.remove();
-    updateEmptyMessage();
+    updateView();
   });
 
   item.append(checkbox, label);
@@ -198,14 +240,13 @@ async function loadTodos() {
     .order('due_date', { ascending: true, nullsFirst: false })
     .order('id');
 
-  emptyMessage.textContent = '아직 할 일이 없어요.';
   if (error) {
     emptyMessage.hidden = true;
     showError('할 일을 불러오지 못했어요.', error);
     return;
   }
   data.forEach(renderTodo);
-  updateEmptyMessage();
+  updateView();
 }
 
 // "추가" 버튼을 누르거나 Enter를 치면 실행됩니다.
@@ -236,7 +277,7 @@ form.addEventListener('submit', async (event) => {
   }
   clearError();
   renderTodo(data);
-  updateEmptyMessage();
+  updateView();
   input.value = '';
   dueInput.value = ''; // 마감일은 할 일마다 다르니 비웁니다. 이름은 그대로 둬요.
   input.focus();
