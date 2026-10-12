@@ -31,13 +31,23 @@ h1 {
   color: #888;
 }
 
+/* 이름 칸(위)과 할 일 칸 + 추가 버튼(아래)을 세로로 쌓기 */
 #todo-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-row {
   display: flex;
   gap: 8px;
 }
 
 #todo-input {
   flex: 1;
+}
+
+#todo-form input {
   padding: 10px 12px;
   font-size: 16px;
   border: 1px solid #ccc;
@@ -97,6 +107,11 @@ button:disabled {
 #todo-list li.done span {
   text-decoration: line-through;
   color: #999;
+}
+
+/* 할 일 앞에 붙는 작성자 이름 */
+#todo-list .author {
+  font-weight: 600;
 }
 
 #todo-list .delete-button {

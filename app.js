@@ -3,6 +3,7 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 // 화면에서 사용할 요소들을 찾아 둡니다.
 const form = document.getElementById('todo-form');
+const authorInput = document.getElementById('author-input');
 const input = document.getElementById('todo-input');
 const submitButton = form.querySelector('button[type="submit"]');
 const list = document.getElementById('todo-list');
@@ -26,7 +27,7 @@ function clearError() {
 }
 
 // 할 일 한 줄(체크박스 + 글자 + 삭제 버튼)을 만들어 목록에 붙입니다.
-// todo는 Supabase에서 받은 { id, text, done } 모양의 할 일입니다.
+// todo는 Supabase에서 받은 { id, text, done, author } 모양의 할 일입니다.
 function renderTodo(todo) {
   const item = document.createElement('li');
   item.classList.toggle('done', todo.done);
@@ -54,8 +55,15 @@ function renderTodo(todo) {
     item.classList.toggle('done', done);
   });
 
+  // 이름이 있으면 "윤지: 운동하기"처럼 할 일 앞에 붙입니다.
   const label = document.createElement('span');
-  label.textContent = todo.text;
+  if (todo.author) {
+    const author = document.createElement('strong');
+    author.className = 'author';
+    author.textContent = todo.author;
+    label.append(author, ': ');
+  }
+  label.append(todo.text);
 
   const deleteButton = document.createElement('button');
   deleteButton.type = 'button';
@@ -88,7 +96,7 @@ function renderTodo(todo) {
 async function loadTodos() {
   const { data, error } = await db
     .from('todos')
-    .select('id, text, done')
+    .select('id, text, done, author')
     .order('id'); // 추가한 순서대로 보여 줍니다.
 
   emptyMessage.textContent = '아직 할 일이 없어요.';
@@ -108,12 +116,15 @@ form.addEventListener('submit', async (event) => {
   const text = input.value.trim();
   if (text === '') return;
 
+  // 이름은 안 적어도 됩니다. 비어 있으면 "이름 없음"(null)으로 저장해요.
+  const author = authorInput.value.trim() || null;
+
   submitButton.disabled = true; // 저장하는 동안 두 번 추가되지 않게 막습니다.
 
   const { data, error } = await db
     .from('todos')
-    .insert({ text })
-    .select('id, text, done')
+    .insert({ text, author })
+    .select('id, text, done, author')
     .single();
 
   submitButton.disabled = false;

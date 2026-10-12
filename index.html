@@ -13,8 +13,11 @@
 
     <!-- 할 일 입력 폼 -->
     <form id="todo-form">
-      <input id="todo-input" type="text" placeholder="할 일을 입력하세요" autocomplete="off" required>
-      <button type="submit">추가</button>
+      <input id="author-input" type="text" placeholder="이름 (선택)" autocomplete="off">
+      <div class="input-row">
+        <input id="todo-input" type="text" placeholder="할 일을 입력하세요" autocomplete="off" required>
+        <button type="submit">추가</button>
+      </div>
     </form>
 
     <!-- 저장이나 불러오기에 실패하면 여기에 오류가 표시됩니다 -->
